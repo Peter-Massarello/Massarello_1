@@ -24,6 +24,24 @@ void print_env(){
 	}
 }
 
+void print_new_env(){
+	char **ptr;
+	char *index;
+	char tempStr[10000];
+	int count = 0;
+	const char delim[2] = "=";
+
+	while(environ[count] != NULL){
+		count++;
+	}
+	
+	for(int i = 2; i < count; i++){
+		strcpy(tempStr, environ[i]);
+		index = strtok(tempStr, delim);
+		printf("%s=%s\n", index, getenv(index));
+	}
+}
+
 void help_menu(){
 	system("clear");
 	printf("HELP MENU:\n\n");
@@ -47,33 +65,71 @@ void print_env_count(char **env){
 }
 
 void i_option(int argc, char **argv){
-	char **ptr;
+	char **ptr = argv;
 	int count = 0;
 	int size;
 	bool foundUtil = false;
 
-	for(ptr = argv; ptr != NULL; ptr++){
+	for(int i = 0; i < argc; i++){
 		count++;
-		if(strcmp(*ptr, "utility") == 0){
+		if(strcmp(ptr[i], "utility") == 0){
 			printf("Utility found!");
 			foundUtil = true;
 			break;
 		}
 	}
-	printf("Before new ENV\n");
 	char **newEnv = malloc(sizeof(char *) * (count + 1));
-	
+	printf("%d\n", count);	
 	for(int i = 2; i < count; i++){
 		size = strlen(argv[i]);
 		newEnv[i] = (char *)malloc(sizeof(char *) * (size + 1));
 		newEnv[i] = argv[i]; 
-		printf("In loop\n");
 	}
 	newEnv[count] = NULL;
-	printf("After newEnv\n");
 	environ = newEnv;
 	print_env();
 	free(newEnv);
+}
+
+void i_option2(int argc, char **argv){
+	char *arg = optarg;
+	char **ptr = argv;
+	int count = 0;
+	int size = 0;
+	bool foundUtil = false;
+	for(int i = 0; i < argc; i++){
+		count++;
+		if(strcmp(ptr[i], "utility") == 0){
+			printf("Utility found!\n");
+			foundUtil = true;
+			break;
+		}
+	}
+	char **newEnv = malloc(sizeof(char *) * (count + 1));
+
+	size = strlen(arg);
+	newEnv[0] = (char *)malloc(sizeof(char *) * (size + 1));
+	newEnv[0] = arg;
+	if(optind < argc)
+	{
+		//printf("%s\n", newEnv[0]);
+		for(int i = 0; i < count; i++)
+		{
+			size = strlen(ptr[i]);
+			newEnv[i] = (char *)malloc(sizeof(char *) * (size + 1));
+			newEnv[i] = ptr[i]; 
+			//printf("%s\n", newEnv[i + 2]);
+	
+		}
+		newEnv[count] = NULL;
+		environ = newEnv;
+		print_new_env();
+	}
+	//environ = newEnv;
+	//printf("%s\n%s\n%s\n", newEnv[0], newEnv[1], newEnv[optind]);
+	//printf("%s\n%s\n%s\n", environ[0], environ[1], environ[2]);
+	//print_env();
+
 }
 
 int main(int argc, char* argv[]){
@@ -91,8 +147,7 @@ int main(int argc, char* argv[]){
 		switch(opt)
 		{
 			case 'i':
-				printf("Inside I option");
-				i_option(argc,argv);
+				i_option2(argc,argv);
 				break;
 			case 'h':
 				help_menu();
