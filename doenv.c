@@ -24,19 +24,14 @@ void print_env(){
 	}
 }
 
-void print_new_env(){
+void print_env2(){
 	char **ptr;
 	char *index;
 	char tempStr[10000];
-	int count = 0;
 	const char delim[2] = "=";
-
-	while(environ[count] != NULL){
-		count++;
-	}
 	
-	for(int i = 2; i < count; i++){
-		strcpy(tempStr, environ[i]);
+	for(ptr = environ; *ptr != NULL; ptr++){
+		strcpy(tempStr, *ptr);
 		index = strtok(tempStr, delim);
 		printf("%s=%s\n", index, getenv(index));
 	}
@@ -56,82 +51,132 @@ void help_menu(){
 		
 }
 
-void print_env_count(char **env){
-	int count  = 0;
-	while(env[count] != NULL){
-		count++;
-	}
-	printf("%d", count);
-}
-
-void i_option(int argc, char **argv){
-	char **ptr = argv;
+void i_option2(int argc, char **argv){
 	int count = 0;
 	int size;
 	bool foundUtil = false;
-
-	for(int i = 0; i < argc; i++){
-		count++;
-		if(strcmp(ptr[i], "utility") == 0){
-			printf("Utility found!");
-			foundUtil = true;
-			break;
-		}
+	for(int i = 2; i < argc; i++){
+			count++;
 	}
 	char **newEnv = malloc(sizeof(char *) * (count + 1));
-	printf("%d\n", count);	
-	for(int i = 2; i < count; i++){
-		size = strlen(argv[i]);
-		newEnv[i] = (char *)malloc(sizeof(char *) * (size + 1));
-		newEnv[i] = argv[i]; 
-	}
-	newEnv[count] = NULL;
-	environ = newEnv;
-	print_env();
-	free(newEnv);
-}
-
-void i_option2(int argc, char **argv){
-	char *arg = optarg;
-	char **ptr = argv;
-	int count = 0;
-	int size = 0;
-	bool foundUtil = false;
-	for(int i = 0; i < argc; i++){
-		count++;
-		if(strcmp(ptr[i], "utility") == 0){
-			printf("Utility found!\n");
-			foundUtil = true;
-			break;
-		}
-	}
-	char **newEnv = malloc(sizeof(char *) * (count + 1));
-
-	size = strlen(arg);
-	newEnv[0] = (char *)malloc(sizeof(char *) * (size + 1));
-	newEnv[0] = arg;
+	char *arg = optarg;	
 	if(optind < argc)
 	{
-		//printf("%s\n", newEnv[0]);
 		for(int i = 0; i < count; i++)
 		{
-			size = strlen(ptr[i]);
-			newEnv[i] = (char *)malloc(sizeof(char *) * (size + 1));
-			newEnv[i] = ptr[i]; 
-			//printf("%s\n", newEnv[i + 2]);
-	
+			size = strlen(argv[i]);
+			newEnv[i] = (char*)malloc(sizeof(char *) * (size + 1));
+			//newEnv[i] = argv[optind];
+			optind++;
 		}
 		newEnv[count] = NULL;
+		char *arg = optarg;
 		environ = newEnv;
-		print_new_env();
+
+		//printenv2();
+		
 	}
-	//environ = newEnv;
-	//printf("%s\n%s\n%s\n", newEnv[0], newEnv[1], newEnv[optind]);
-	//printf("%s\n%s\n%s\n", environ[0], environ[1], environ[2]);
-	//print_env();
+
+
+
 
 }
 
+
+int iOption(int argc, char **argv){
+	int noOfChars = 0;
+	int i = 0;
+	for(i = 2; i < argc; i++)
+	{
+			noOfChars++;
+		
+	}
+
+
+	char **newEnv = malloc(sizeof(char *) * (noOfChars + 1));
+
+	char *arg = optarg;
+
+	if(optind < argc)
+	{
+		for(i = 0; i < noOfChars; i++)
+		{
+			int size = strlen(argv[i]);
+			newEnv[i] = (char*)malloc(sizeof(char *) * (size + 1));
+			newEnv[i] = argv[optind];
+			optind++;
+		}
+
+		newEnv[noOfChars] = NULL;
+		environ = newEnv;
+
+		//printenv2();
+
+
+	}
+	else
+	{
+		printf("For later\n");
+	}
+}
+
+
+bool checkForPair(char **argv, int currentCount){
+	char *s;
+	char **ptr;
+	char buf[1000];
+	
+	ptr = argv;
+	strcpy(buf, ptr[currentCount]);
+	s = strchr(buf, '=');
+	if(s != NULL)
+		return true;
+	else
+		return false;
+ 		
+}
+
+void createEnv(){
+	
+
+}
+
+int checkForSystemCall(char ** argv,int  i){
+	if(system(argv[i]) != -1){
+		
+	}
+	else{
+		perror("Error: ");
+		return -1;
+	}
+}
+void i_option(int argc, char ** argv){
+	int count = 0;
+	char ** newEnv = malloc(sizeof(char*) * (argc + 1));
+	for(int i = 1; i < argc; i++)
+	{
+		if(checkForPair(argv, i))
+		{
+			printf("Found name=value pair\n");
+			int size = strlen(argv[i]);
+			newEnv[i] = (char *)malloc(sizeof(char *) * (size + 1));
+			newEnv[i] = argv[i];
+			printf("%s\n", newEnv[i]);
+			
+		}
+		else if(checkForSystemCall(argv, i) != -1)
+		{
+			printf("Systemcall found");
+		}
+		/*else
+		{
+
+		}*/
+
+
+	
+	}
+}
 int main(int argc, char* argv[]){
 	
 	int opt;
@@ -142,12 +187,13 @@ int main(int argc, char* argv[]){
 		printf("Program called with no arguments, use ./doenv -h for help\n");
 		return 0;
 	}
-	while((opt = getopt(argc, argv, "i:h")) != -1)
+	i_option(argc, argv);
+	while((opt = getopt(argc, argv, "ih:")) != -1)
 	{
 		switch(opt)
 		{
 			case 'i':
-				i_option2(argc,argv);
+				i_option(argc,argv);
 				break;
 			case 'h':
 				help_menu();
