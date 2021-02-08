@@ -46,17 +46,34 @@ void print_env_count(char **env){
 	printf("%d", count);
 }
 
-void ignore_option(int argc, char **argv){
-	//extern char **environ;
+void i_option(int argc, char **argv){
 	char **ptr;
+	int count = 0;
+	int size;
 	bool foundUtil = false;
 
-	environ = &argv[2];
+	for(ptr = argv; ptr != NULL; ptr++){
+		count++;
+		if(strcmp(*ptr, "utility") == 0){
+			printf("Utility found!");
+			foundUtil = true;
+			break;
+		}
+	}
+	printf("Before new ENV\n");
+	char **newEnv = malloc(sizeof(char *) * (count + 1));
 	
-
-
+	for(int i = 2; i < count; i++){
+		size = strlen(argv[i]);
+		newEnv[i] = (char *)malloc(sizeof(char *) * (size + 1));
+		newEnv[i] = argv[i]; 
+		printf("In loop\n");
+	}
+	newEnv[count] = NULL;
+	printf("After newEnv\n");
+	environ = newEnv;
 	print_env();
-
+	free(newEnv);
 }
 
 int main(int argc, char* argv[]){
@@ -69,12 +86,13 @@ int main(int argc, char* argv[]){
 		printf("Program called with no arguments, use ./doenv -h for help\n");
 		return 0;
 	}
-	while((opt = getopt(argc, argv, "ih")) != -1)
+	while((opt = getopt(argc, argv, "i:h")) != -1)
 	{
 		switch(opt)
 		{
 			case 'i':
-				ignore_option(argc,argv);
+				printf("Inside I option");
+				i_option(argc,argv);
 				break;
 			case 'h':
 				help_menu();
@@ -83,6 +101,6 @@ int main(int argc, char* argv[]){
 		}
 	}
 
-	print_env();
+
 	return 0;
 }
