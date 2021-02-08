@@ -102,8 +102,10 @@ void i_option(int argc, char ** argv){
 		}
 		
 	}
+	newEnv[argc] = NULL;
 	environ = newEnv;
-	print_env2();
+	printf("right before print\n");
+	print_env();
 }
 int main(int argc, char* argv[]){
 	
