@@ -51,74 +51,6 @@ void help_menu(){
 		
 }
 
-void i_option2(int argc, char **argv){
-	int count = 0;
-	int size;
-	bool foundUtil = false;
-	for(int i = 2; i < argc; i++){
-			count++;
-	}
-	char **newEnv = malloc(sizeof(char *) * (count + 1));
-	char *arg = optarg;	
-	if(optind < argc)
-	{
-		for(int i = 0; i < count; i++)
-		{
-			size = strlen(argv[i]);
-			newEnv[i] = (char*)malloc(sizeof(char *) * (size + 1));
-			//newEnv[i] = argv[optind];
-			optind++;
-		}
-		newEnv[count] = NULL;
-		char *arg = optarg;
-		environ = newEnv;
-
-		//printenv2();
-		
-	}
-
-
-
-
-}
-
-
-int iOption(int argc, char **argv){
-	int noOfChars = 0;
-	int i = 0;
-	for(i = 2; i < argc; i++)
-	{
-			noOfChars++;
-		
-	}
-
-
-	char **newEnv = malloc(sizeof(char *) * (noOfChars + 1));
-
-	char *arg = optarg;
-
-	if(optind < argc)
-	{
-		for(i = 0; i < noOfChars; i++)
-		{
-			int size = strlen(argv[i]);
-			newEnv[i] = (char*)malloc(sizeof(char *) * (size + 1));
-			newEnv[i] = argv[optind];
-			optind++;
-		}
-
-		newEnv[noOfChars] = NULL;
-		environ = newEnv;
-
-		//printenv2();
-
-
-	}
-	else
-	{
-		printf("For later\n");
-	}
-}
 
 
 bool checkForPair(char **argv, int currentCount){
@@ -153,7 +85,7 @@ int checkForSystemCall(char ** argv,int  i){
 void i_option(int argc, char ** argv){
 	int count = 0;
 	char ** newEnv = malloc(sizeof(char*) * (argc + 1));
-	for(int i = 1; i < argc; i++)
+	for(int i = 2; i < argc; i++)
 	{
 		if(checkForPair(argv, i))
 		{
@@ -166,16 +98,12 @@ void i_option(int argc, char ** argv){
 		}
 		else if(checkForSystemCall(argv, i) != -1)
 		{
-			printf("Systemcall found");
+
 		}
-		/*else
-		{
-
-		}*/
-
-
-	
+		
 	}
+	environ = newEnv;
+	print_env2();
 }
 int main(int argc, char* argv[]){
 	
@@ -187,7 +115,6 @@ int main(int argc, char* argv[]){
 		printf("Program called with no arguments, use ./doenv -h for help\n");
 		return 0;
 	}
-	i_option(argc, argv);
 	while((opt = getopt(argc, argv, "ih:")) != -1)
 	{
 		switch(opt)
