@@ -109,7 +109,6 @@ void i_option(int argc, char ** argv){
  *	eviron ptr
  *
  * **********************************************/
-	int count = 0;
 	int index = 0;
 	char ** newEnv = malloc(sizeof(char*) * (argc + 1));
 	for(int i = 2; i < argc; i++)
@@ -126,13 +125,59 @@ void i_option(int argc, char ** argv){
 		}
 		else if(checkForSystemCall(argv, i) != -1)
 		{
-			printf("IN else if loop\n");
+			//Does nothing because function above handles it all
 		}
 		
 	}
 	newEnv[argc] = NULL;
 	environ = newEnv;
 	print_env();
+	free(newEnv);
+}
+
+void update_env(int argc, char **argv){
+	int envCount = 0;
+	int newArgCount = 0;
+	int totalArgs = 0;
+	int index = 0;
+	while(environ[envCount] != NULL)
+	{
+		envCount++;
+	}
+	for(int i = 2; i < argc; i++)
+	{
+		if(checkForPair(argv, i))
+		{
+			newArgCount++;		
+		}
+	}
+	totalArgs = envCount + newArgCount;
+	char **newEnv = malloc(sizeof(char*) * (totalArgs + 1));
+
+	for(int i = 0; i < envCount; i++)
+	{
+		int size = strlen(environ[i]);
+		newEnv[index] = (char *)malloc(sizeof(char *) * (size + 1));
+		newEnv[index] = environ[i];
+		index++;
+
+	}
+	newEnv[index] = NULL;
+	environ = newEnv;
+	print_env();
+	/*for(int i = 2; i < argc; i++)
+	{
+		if(checkForPair(argv, i))
+		{
+			int size = strlen(argv[i]);
+			newEnv[index] = (char *)malloc(sizeof(char *) * (size + 1));
+			newEnv[index] = argv[i];
+			index++
+		}
+	
+	}*/
+
+
 }
 
 int main(int argc, char* argv[]){
@@ -141,6 +186,7 @@ int main(int argc, char* argv[]){
 
 	if(argc == 1)
 	{
+		system("clear");
 		print_env();
 		printf("Program called with no arguments, use ./doenv -h for help\n");
 		return 0;
@@ -150,15 +196,18 @@ int main(int argc, char* argv[]){
 		switch(opt)
 		{
 			case 'i':
+				system("clear");
 				i_option(argc,argv);
 				break;
 			case 'h':
+				system("clear");
 				help_menu();
 				break;
 
 		}
 	}
-	
+	system("clear");
+	update_env(argc, argv);
 
 	return 0;
 }
