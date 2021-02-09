@@ -1,3 +1,15 @@
+/***********************************************************************
+ * 
+ *	Name: Peter Massarello
+ *	Email: pmmmw@umsystem.edu <- School email
+ *	       pmassarello@gmail.com <- Git Hub email
+ *	Title: Enviornment Assignment 1 CMPSCI 4760
+ *	Description: Create a tool that emulates the system call
+ *		'env' while demonstrating your proficiency with
+ *		getopt and perror.
+ *
+ * ********************************************************************/
+
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,6 +19,12 @@
 
 extern char **environ;
 void print_env(){
+/**************************************************
+ *	
+ *	Prints enviorment by getting count of items
+ *	and prints to that count to stdout
+ *
+ * ***********************************************/
 	char **ptr;
 	char *index;
 	char tempStr[10000];
@@ -24,26 +42,13 @@ void print_env(){
 	}
 }
 
-void print_env2(){
-	char **ptr;
-	char *index;
-	char tempStr[10000];
-	const char delim[2] = "=";
-	
-	for(ptr = environ; *ptr != NULL; ptr++){
-		strcpy(tempStr, *ptr);
-		index = strtok(tempStr, delim);
-		printf("%s=%s\n", index, getenv(index));
-	}
-}
-
-void help_menu(){
+void help_menu(){ // Help menu
 	system("clear");
 	printf("HELP MENU:\n\n");
 	printf("To display all current enviorment variables, call program with no arguments. EX './doenv'.\n\n");
 	printf("OPTION [-i]:\n");
 	printf("            When called, will replace current eviorment variables with given [name=value] pairs\n");
-	printf("	    EX: ./doenv [-i] [name=value] ... [name=value]\n\n");
+	printf("	    EX: ./doenv [-i] [name=value] ... [name=value] [cmd] ... [cmd]\n\n");
 	printf("OPTION [-h]:\n");
 	printf("            When called, will print out a help menu displaying functionality of program\n");
 	printf("            EX: ./doenv [-h]\n\n");
@@ -54,6 +59,12 @@ void help_menu(){
 
 
 bool checkForPair(char **argv, int currentCount){
+/**************************************************
+ *
+ *	Checks string to see if it is a name=value 
+ *	pair by using '=' as a delmiter
+ *
+ **************************************************/
 	char *s;
 	char **ptr;
 	char buf[1000];
@@ -74,15 +85,30 @@ void createEnv(){
 }
 
 int checkForSystemCall(char ** argv,int  i){
-	if(system(argv[i]) != -1){
-		
+/*************************************************
+ *
+ *	Checks for valid system call, otherwise
+ *	it returns error message using perror
+ *
+ * ***********************************************/
+	int systemCheck = system(argv[i]);
+	if(systemCheck == 0){
+		system(argv[i]);
 	}
 	else{
-		perror("Error: ");
+		perror("Error: Unknown Command entered\n ");
 		return -1;
 	}
 }
 void i_option(int argc, char ** argv){
+/************************************************
+ *
+ *	Gathers all arguments given and searches
+ *	to see if either name=value pair or
+ *	a valid system call. Then overwrites
+ *	eviron ptr
+ *
+ * **********************************************/
 	int count = 0;
 	int index = 0;
 	char ** newEnv = malloc(sizeof(char*) * (argc + 1));
@@ -100,7 +126,7 @@ void i_option(int argc, char ** argv){
 		}
 		else if(checkForSystemCall(argv, i) != -1)
 		{
-
+			printf("IN else if loop\n");
 		}
 		
 	}
@@ -132,7 +158,7 @@ int main(int argc, char* argv[]){
 
 		}
 	}
-
+	
 
 	return 0;
 }
