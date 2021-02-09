@@ -18,6 +18,7 @@
 #include <stdbool.h>
 
 extern char **environ;
+int indexOfEnv = 0;
 void print_env(){
 /**************************************************
  *	
@@ -135,6 +136,30 @@ void i_option(int argc, char ** argv){
 	free(newEnv);
 }
 
+bool checkIfNew(char **argv, int currentCount, int environCount){
+	char tempEnvStr[10000];
+	char tempArgStr[10000];
+	char *envKey;
+	char *argKey;
+	const char delim[2] = "=";
+
+	int size = strlen(argv[currentCount]);
+	strcpy(tempArgStr, argv[currentCount]);
+	argKey = strtok(tempArgStr, delim);
+
+	for(int i = 0; i < environCount; i++){
+		strcpy(tempEnvStr, environ[i]);
+		envKey = strtok(tempEnvStr, delim);
+		if(*envKey == *argKey)
+		{
+			indexOfEnv = i;
+			return false;
+		}
+
+	}
+	return true;	
+
+}
 void update_env(int argc, char **argv){
 	int envCount = 0;
 	int newArgCount = 0;
@@ -162,21 +187,35 @@ void update_env(int argc, char **argv){
 		index++;
 
 	}
-	newEnv[index] = NULL;
-	environ = newEnv;
-	print_env();
-	/*for(int i = 2; i < argc; i++)
+	for(int i = 1; i < argc; i++)
 	{
 		if(checkForPair(argv, i))
 		{
-			int size = strlen(argv[i]);
-			newEnv[index] = (char *)malloc(sizeof(char *) * (size + 1));
-			newEnv[index] = argv[i];
-			index++
+			if(checkIfNew(argv, i, envCount))
+			{
+				int size = strlen(argv[i]);
+				newEnv[index] = (char *)malloc(sizeof(char *) * (size + 1));
+				newEnv[index] = argv[i];
+				index++;
+	
+			}
+			else
+			{
+
+				newEnv[indexOfEnv] = argv[i];
+
+			}
+		}
+		else if(checkForSystemCall(argv, i))
+		{
+			//Does nothing because function above handles it all
 		}
 	
-	}*/
-
+	}
+	newEnv[index] = NULL;
+	environ = newEnv;
+	print_env();
+//	free(newEnv);
 
 }
 
