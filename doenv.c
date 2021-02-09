@@ -84,16 +84,18 @@ int checkForSystemCall(char ** argv,int  i){
 }
 void i_option(int argc, char ** argv){
 	int count = 0;
+	int index = 0;
 	char ** newEnv = malloc(sizeof(char*) * (argc + 1));
 	for(int i = 2; i < argc; i++)
 	{
 		if(checkForPair(argv, i))
 		{
-			printf("Found name=value pair\n");
+			//printf("Found name=value pair\n");
 			int size = strlen(argv[i]);
-			newEnv[i] = (char *)malloc(sizeof(char *) * (size + 1));
-			newEnv[i] = argv[i];
-			printf("%s\n", newEnv[i]);
+			newEnv[index] = (char *)malloc(sizeof(char *) * (size + 1));
+			newEnv[index] = argv[i];
+			//printf("%s\n", newEnv[index]);
+			index++;
 			
 		}
 		else if(checkForSystemCall(argv, i) != -1)
@@ -104,9 +106,9 @@ void i_option(int argc, char ** argv){
 	}
 	newEnv[argc] = NULL;
 	environ = newEnv;
-	printf("right before print\n");
 	print_env();
 }
+
 int main(int argc, char* argv[]){
 	
 	int opt;
