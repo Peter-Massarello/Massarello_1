@@ -63,7 +63,7 @@ void help_menu(){ // Help menu
 	printf("            EX: ./doenv [name=value] ... [name=value] [cmd] ... [cmd]\n\n");										
 }
 
-bool checkForPair(char **argv, int currentCount){
+bool check_for_pair(char **argv, int currentCount){
 /*************************************************************
  *
  *	Checks string to see if it is a name=value pair by
@@ -85,7 +85,7 @@ bool checkForPair(char **argv, int currentCount){
 }
 
 
-void checkForSystemCall(char **argv,int  i){
+void check_for_system_call(char **argv,int  i){
 /***********************************************************
  *
  *	Checks for a valid system call, if invalid returns
@@ -111,7 +111,7 @@ void i_option(int argc, char ** argv){
 	newEnv[argc] = NULL;
 	for(int i = 2; i < argc; i++)
 	{
-		if(checkForPair(argv, i))
+		if(check_for_pair(argv, i))
 		{
 			int size = strlen(argv[i]);
 			newEnv[index] = (char *)malloc(sizeof(char *) * (size + 1));
@@ -121,7 +121,7 @@ void i_option(int argc, char ** argv){
 		}
 		else
 		{
-			checkForSystemCall(argv, i);
+			check_for_system_call(argv, i);
 		}
 
 	}
@@ -129,7 +129,7 @@ void i_option(int argc, char ** argv){
 	print_env();
 }
 
-bool checkIfNew(char **argv, int currentCount, int environCount){
+bool check_if_new(char **argv, int currentCount, int environCount){
 /********************************************************
  *
  *	Checks a single argument key against all keys
@@ -178,7 +178,7 @@ void update_env(int argc, char **argv){
 	}
 	for(int i = 2; i < argc; i++)
 	{
-		if(checkForPair(argv, i))
+		if(check_for_pair(argv, i))
 		{
 			newArgCount++;
 		}
@@ -197,9 +197,9 @@ void update_env(int argc, char **argv){
 	}
 	for(int i = 1; i < argc; i++)
 	{
-		if(checkForPair(argv, i))
+		if(check_for_pair(argv, i))
 		{
-			if(checkIfNew(argv, i, envCount))
+			if(check_if_new(argv, i, envCount))
 			{
 				int size = strlen(argv[i]);
 				newEnv[index] = (char *)malloc(sizeof(char *) * (size + 1));
@@ -214,7 +214,7 @@ void update_env(int argc, char **argv){
 		}
 		else
 		{
-			checkForSystemCall(argv, i);
+			check_for_system_call(argv, i);
 		}
 	}
 	environ = newEnv;
