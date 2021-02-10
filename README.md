@@ -3,34 +3,50 @@ Name: Peter Massarello
 FUNCTIONS USED:
 ---------------------------------------------------------------------------------------------
 
-print_env():\n
+print_env():
+
 	-Uses a while loop to gather entire count of name=value pairs in environ.
+
 	-Iterates to the count generated above and prints out name=value pairs.
 
 help_menu():
+
 	-Prints out help menu with printf statements.
 
 check_for_pair():
+
 	-Uses a char buffer to hold the current argument being given to it.
+
 	-Checks to see if buffer string has a '=', if it does, return true.
 
 check_for_system_call:
+
 	-System calls and uses perror with a errno of 3 if system call fails.
 
 i_option:
+
 	-Iterates through all of argc and uses check_for_pair and check_for_system_call.
+
 	-Allocates newEnv array and once finished, sets environ to newEnv.
 
 check_if_new:
+
 	-Iterates though all name=value pairs in environ.
+
 	-Strcpys the string and then uses strtok to gather the key at the delimiter.
+
 	-If the given key matches any key in environ returns false, otherwise returns true.
 
 update_env:
+
 	-Gathers the count of arguments of both environ and argv.
+
 	-Combines those counts and allocates newEnv to the proper size.
+
 	-Then allocates all arguments from environ to newEnv
+
 	-Then goes through all arguments in argv checking to see if they are pairs or calls.
+
 	-If name=value pair, then add to newEnv, otherwise test the system call.
 
 no_i_args:

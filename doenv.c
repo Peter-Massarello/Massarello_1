@@ -3,6 +3,7 @@
  *	Name: Peter Massarello
  *	Email: pmmmw@umsystem.edu <- School Email
  *	       pmassarello@gmail.com <- Git Hub Email
+ *	Git Hub: github.com/Peter-Massarello
  *	Title: Environment Tool (Assignment 1) CMPSCI 4760
  *	Description: Create a tool that emulates the system
  *		call 'env' while demonstrating your proficiency
